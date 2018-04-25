@@ -1,0 +1,19 @@
+version: "3.6"
+services:
+  nginx:
+    # image: openresty/openresty:jessie
+    container_name: openresty-nginx
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./nginx.conf.d/:/usr/local/openresty/nginx/conf/conf.d/
+      - ./lua:/usr/local/openresty/nginx/lua
+      - nginx-logs-volume:/usr/local/openresty/nginx/logs
+
+volumes:
+  nginx-logs-volume:
+    name: nginx-logs-volume
