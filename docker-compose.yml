@@ -35,6 +35,15 @@ services:
     depends_on:
       - elasticsearch
 
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:6.2.4
+    container_name: filebeat
+    volumes: 
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+    command: chmod go-w /usr/share/filebeat/filebeat.yml
+    depends_on:
+      - elasticsearch
+
 volumes:
   nginx-logs-volume:
     name: nginx-logs-volume
