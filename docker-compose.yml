@@ -14,6 +14,27 @@ services:
       - ./lua:/usr/local/openresty/nginx/lua
       - nginx-logs-volume:/usr/local/openresty/nginx/logs
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.2.4
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
+    depends_on:
+      - elasticsearch
+
 volumes:
   nginx-logs-volume:
     name: nginx-logs-volume
