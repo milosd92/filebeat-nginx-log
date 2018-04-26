@@ -32,7 +32,7 @@ resp["duration"] = ngx.var.upstream_response_time
 resp["time"] = ngx.now()
 resp["body"] = ngx.var.response_body
 
-local file, err = io.open("/usr/local/openresty/nginx/logs/request-response.log", "a");
+local file, err = io.open("/usr/local/openresty/nginx/logs/test/request-response.log", "a");
 
 if file == nil then
     ngx.log(ngx.CRIT, "Couldn't open file: "..err)

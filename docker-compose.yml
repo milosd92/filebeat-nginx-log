@@ -4,7 +4,7 @@ services:
     # image: openresty/openresty:jessie
     container_name: openresty-nginx
     build:
-      context: .
+      context: ./nginx
       dockerfile: Dockerfile
     ports:
       - "8080:80"
@@ -12,7 +12,7 @@ services:
       - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
       - ./nginx.conf.d/:/usr/local/openresty/nginx/conf/conf.d/
       - ./lua:/usr/local/openresty/nginx/lua
-      - nginx-logs-volume:/usr/local/openresty/nginx/logs
+      - nginx-logs-volume:/usr/local/openresty/nginx/logs/test
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
@@ -34,15 +34,24 @@ services:
       - ELASTICSEARCH_PASSWORD=changeme
     depends_on:
       - elasticsearch
+    links: 
+      - elasticsearch
 
   filebeat:
-    image: docker.elastic.co/beats/filebeat:6.2.4
+    # image: docker.elastic.co/beats/filebeat:6.2.4
+    build:
+      context: ./filebeat
+      dockerfile: Dockerfile
     container_name: filebeat
-    volumes: 
-      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
-    command: chmod go-w /usr/share/filebeat/filebeat.yml
+    volumes:
+      - nginx-logs-volume:/usr/local/openresty/nginx/logs/test
     depends_on:
+      - nginx
       - elasticsearch
+      - kibana
+    links:
+      - elasticsearch
+      - kibana
 
 volumes:
   nginx-logs-volume:
