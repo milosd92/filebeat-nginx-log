@@ -12,7 +12,7 @@ services:
       - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
       - ./nginx.conf.d/:/usr/local/openresty/nginx/conf/conf.d/
       - ./lua:/usr/local/openresty/nginx/lua
-      - nginx-logs-volume:/usr/local/openresty/nginx/logs/test
+      - logs-volume:/usr/local/openresty/nginx/logs/test
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
@@ -44,7 +44,7 @@ services:
       dockerfile: Dockerfile
     container_name: filebeat
     volumes:
-      - nginx-logs-volume:/usr/local/openresty/nginx/logs/test
+      - logs-volume:/usr/local/openresty/nginx/logs/test
     depends_on:
       - nginx
       - elasticsearch
@@ -54,5 +54,5 @@ services:
       - kibana
 
 volumes:
-  nginx-logs-volume:
-    name: nginx-logs-volume
+  logs-volume:
+    name: logs-volume
