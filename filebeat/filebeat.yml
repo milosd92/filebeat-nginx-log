@@ -1,9 +1,13 @@
 filebeat:
   prospectors:
-    type: log
-    enabled: true
+  - type: log
     paths:
-      - /var/logs/*.log
+      - /var/log/nginx/request-response.log
+    tags: ["json"]
+    json.keys_under_root: true
+    processors:
+    - decode_json_fields:
+        fields: ["request", "response"]
 
   modules:
     - module: nginx

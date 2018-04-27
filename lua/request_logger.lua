@@ -37,6 +37,6 @@ local file, err = io.open("/var/log/nginx/request-response.log", "a");
 if file == nil then
     ngx.log(ngx.CRIT, "Couldn't open file: "..err)
 else
-    file:write(json.encode(data))
+    file:write(json.encode(data), "\r\n")
     file:close()
 end
