@@ -44,7 +44,9 @@ services:
       dockerfile: Dockerfile
     container_name: filebeat
     volumes:
-      - logs-volume:/var/log/nginx
+    #   - logs-volume:/var/log/nginx
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - nginx
       - elasticsearch

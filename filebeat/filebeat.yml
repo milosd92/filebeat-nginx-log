@@ -1,27 +1,56 @@
-filebeat:
-  prospectors:
-  - type: log
-    paths:
-      - /var/log/nginx/request-response.log
-    tags: ["json"]
-    json.keys_under_root: true
-    processors:
-    - decode_json_fields:
-        fields: ["request", "response"]
+# filebeat:
+  # prospectors:
+  # - type: log
+  #   paths:
+      # - /var/log/nginx/request-response.log
+    # tags: ["json"]
+    # json.keys_under_root: true
+    # processors:
+    # - decode_json_fields:
+    #     fields: ["request", "response"]
+    # - type: docker
+    #   containers.ids:
+    #     - '*'
 
-  modules:
-    - module: nginx
-      access:
-        var.paths: ["/var/log/nginx/access.log*"]
-      error:
-        var.paths: ["/var/log/nginx/error.log*"]
+  # modules:
+  #   - module: nginx
+  #     access:
+  #       var.paths: ["/var/log/nginx/access.log*"]
+  #     error:
+  #       var.paths: ["/var/log/nginx/error.log*"]
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      templates:
+        - condition.contains:
+            docker.container.name: "openresty-nginx"
+          config:
+            # - type: docker
+            #   containers.ids:
+            #     - ${data.docker.container.id}
+            - module: nginx
+              access:
+                prospector:
+                  type: docker
+                  containers.stream: stdout
+                  containers.ids:
+                    - ${data.docker.container.id}
 
-output:
-  elasticsearch:
-    hosts: ["elasticsearch:9200"]
-    index: "filebeat-%{[beat.version]}-%{+yyyy.MM.dd}"
-    username: "elastic"
-    password: "changeme"
+              error:
+                prospector:
+                  type: docker
+                  containers.stream: stderr
+                  containers.ids:
+                    - ${data.docker.container.id}
+output.console:
+  pretty: true
+
+# output:
+#   elasticsearch:
+#     hosts: ["elasticsearch:9200"]
+#     index: "filebeat-%{[beat.version]}-%{+yyyy.MM.dd}"
+#     username: "elastic"
+#     password: "changeme"
 
 setup:
   kibana:
