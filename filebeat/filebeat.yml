@@ -42,15 +42,15 @@ filebeat.autodiscover:
                   containers.stream: stderr
                   containers.ids:
                     - ${data.docker.container.id}
-output.console:
-  pretty: true
+# output.console:
+  # pretty: true
 
-# output:
-#   elasticsearch:
-#     hosts: ["elasticsearch:9200"]
-#     index: "filebeat-%{[beat.version]}-%{+yyyy.MM.dd}"
-#     username: "elastic"
-#     password: "changeme"
+output:
+  elasticsearch:
+    hosts: ["elasticsearch:9200"]
+    index: "filebeat-%{[beat.version]}-%{+yyyy.MM.dd}"
+    username: "elastic"
+    password: "changeme"
 
 setup:
   kibana:
