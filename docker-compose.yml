@@ -1,11 +1,8 @@
 version: "3.6"
 services:
   nginx:
-    # image: openresty/openresty:jessie
+    image: openresty/openresty:jessie
     container_name: openresty-nginx
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
     ports:
       - "8080:80"
     volumes:
@@ -13,6 +10,15 @@ services:
       - ./nginx.conf.d/:/usr/local/openresty/nginx/conf/conf.d/
       - ./lua:/usr/local/openresty/nginx/lua
       - logs-volume:/var/log/nginx
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.2.4
+    container_name: logstash
+    ports:
+      - "5043:5043"
+    volumes:
+      - ./logstash/pipeline/:/usr/share/logstash/pipeline/
+      # - ./logstash/config/:/usr/share/logstash/config/
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
